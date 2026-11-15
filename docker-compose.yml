@@ -1,0 +1,54 @@
+# Local stack:  docker compose up -d        (db + jaeger + migrate + api)
+#               docker compose up -d db     (just Postgres, for tests)
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres  # local only; real credentials live in the host's env vars
+      POSTGRES_DB: app
+    ports: ["127.0.0.1:${DB_PORT:-5438}:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  jaeger:
+    image: jaegertracing/jaeger:2.10.0
+    ports:
+      - "127.0.0.1:${JAEGER_UI_PORT:-16691}:16686"  # UI: http://127.0.0.1:16691
+      - "127.0.0.1:${OTLP_PORT:-4323}:4318"         # OTLP/HTTP
+
+  migrate:
+    build: .
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/app
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    build: .
+    ports: ["127.0.0.1:${API_PORT:-8009}:8000"]  # http://127.0.0.1:8009/admin/dashboard, MCP at /mcp/
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/app
+      LLM_PROVIDER: ${LLM_PROVIDER:-fake}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai/}
+      LLM_MODEL: ${LLM_MODEL:-gemini-3.1-flash-lite}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      P1_URL: ${P1_URL:-http://host.docker.internal:8002}
+      P2_URL: ${P2_URL:-http://host.docker.internal:8004}
+      P3_SHOP_URL: ${P3_SHOP_URL:-http://host.docker.internal:8006}
+      P4_URL: ${P4_URL:-http://host.docker.internal:8007}
+      OTEL_ENDPOINT: http://jaeger:4318/v1/traces
+      WORKER_MODE: "off"
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+      jaeger: { condition: service_started }
+
+volumes:
+  pgdata:

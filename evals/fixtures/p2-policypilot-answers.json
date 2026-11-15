@@ -1,0 +1,13 @@
+{
+  "suite": "p2-policypilot-answers",
+  "source": "policypilot/policypilot-answers-dev-20261115-151008-nogit.json",
+  "git_sha": "nogit",
+  "dataset_sha256": "a94e99eb3ed475e0917b20159fd42aac3a8d022aefb08ec71702f669fc383efd",
+  "model": "gemini-3.1-flash-lite",
+  "metrics": {
+    "answer_accuracy": 0.9206349206349206,
+    "citation_precision": 0.9846153846153847,
+    "abstention_accuracy": 0.95,
+    "permission_leaks": 0.0
+  }
+}

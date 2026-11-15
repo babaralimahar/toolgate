@@ -1,0 +1,45 @@
+# ToolGate policy: who may call which tool, with what arguments, how often.
+# Deny by default. Reviewed like code; the gateway refuses to start if this file is invalid.
+clients:
+  analyst-desktop: {scopes: [analytics:read, policy:read]}
+  support-agent: {scopes: [orders:read, policy:read]}
+  finance-bot: {scopes: [invoices:read, analytics:read]}
+  unknown: {scopes: []}
+
+rules:
+  # P4 QueryWise: governed analytics
+  - tool: query_analytics
+    effect: allow
+    scopes_required: [analytics:read]
+    constraints: {question: {max_length: 500}}
+    rate_limit: 30/min
+
+  # P2 PolicyPilot: handbook Q&A with citations
+  - tool: ask_policy
+    effect: allow
+    scopes_required: [policy:read]
+    constraints: {question: {max_length: 1000}}
+    rate_limit: 60/min
+
+  # P3 shop: read-only order lookup (refunds stay inside TicketPilot with its own approvals)
+  - tool: lookup_order
+    effect: allow
+    scopes_required: [orders:read]
+    constraints: {order_id: {pattern: "^1\\d{4}$"}}
+    rate_limit: 60/min
+
+  # P1 LedgerLens: invoice status reveals vendor amounts -> a human approves each lookup
+  - tool: invoice_status
+    effect: require_approval
+    scopes_required: [invoices:read]
+    rate_limit: 20/min
+
+  # finance-bot holds analytics:read for scheduled reports, but may not run ad-hoc questions
+  # through the gateway. Shows that a deny rule beats a matching allow rule.
+  - tool: query_analytics
+    effect: deny
+    clients: [finance-bot]
+    scopes_required: []
+    constraints: {}
+
+default: deny

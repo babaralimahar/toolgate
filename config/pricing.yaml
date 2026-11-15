@@ -1,0 +1,30 @@
+# USD per 1 million tokens (text, Standard/paid tier). Copied by hand from the provider's
+# pricing page. Never type prices from memory. Every cost number in a README is computed from
+# logged token counts x this table. Free-tier calls still log the paid-tier price, so reported
+# costs are what the run *would* cost at paid rates.
+as_of: "2026-11-15"
+source: "https://aistudio.google.com/docs/pricing"
+models:
+  fake:
+    input: 0
+    output: 0
+  oracle:
+    input: 0
+    output: 0
+  # Gemini (OpenAI-compatible endpoint). Used by the downstream services.
+  gemini-3.1-flash-lite:
+    input: 0.25
+    output: 1.50
+  gemini-2.5-flash-lite:
+    input: 0.10
+    output: 0.40
+  gemini-3.5-flash-lite:
+    input: 0.30
+    output: 2.50
+  gemini-3-flash-preview:
+    input: 0.50
+    output: 3.00
+  # Scheduled increase: $1.50 / $7.50 from 2027-01-01. Update this entry then.
+  gemini-3.8-flash:
+    input: 0.75
+    output: 3.75

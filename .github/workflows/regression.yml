@@ -1,0 +1,28 @@
+name: eval-regression
+
+# PRs: recorded fixtures only (no model calls, no cost).
+# Manual / nightly: live mode re-runs the deterministic suites and reads the newest reports of the
+# LLM suites; LLM suites are re-run by hand on the free tier with each project's --max-cost cap.
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+jobs:
+  gate-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.12.8"
+      - run: uv sync --frozen
+      - name: Regression gate (fixtures)
+        run: uv run python -m toolgate.regress --fixtures evals/fixtures
+      - name: The gate must catch a degraded prompt (real weaker-prompt run)
+        run: |
+          if uv run python -m toolgate.regress --fixtures evals/fixtures \
+              --use p2-policypilot-answers=evals/fixtures/degraded/p2-policypilot-answers.json; then
+            echo "gate failed to detect the degraded prompt"; exit 1
+          fi

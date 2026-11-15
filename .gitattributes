@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.ps1 text eol=crlf
+# Frozen datasets are hashed byte-for-byte: line endings must never be converted.
+*.jsonl -text
+SHA256SUMS -text

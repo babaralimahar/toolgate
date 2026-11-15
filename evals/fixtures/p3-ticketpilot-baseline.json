@@ -1,0 +1,12 @@
+{
+  "suite": "p3-ticketpilot-baseline",
+  "source": "ticketpilot/ticketpilot-baseline-dev-20261115-160914-nogit.json",
+  "git_sha": "nogit",
+  "dataset_sha256": "cf7e704990dbbf7188217befb945145098941ed0312e6f6edc9b68d29ad53576",
+  "model": "none (rules)",
+  "metrics": {
+    "success_rate_mean": 0.8641975308641975,
+    "approval_routing_accuracy": 0.75,
+    "unsafe_actions": 1.0
+  }
+}

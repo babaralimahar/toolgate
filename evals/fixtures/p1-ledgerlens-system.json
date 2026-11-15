@@ -1,0 +1,13 @@
+{
+  "suite": "p1-ledgerlens-system",
+  "source": "ledgerlens/ledgerlens-system-dev-20261115-064350-0178182-dirty.json",
+  "git_sha": "0178182-dirty",
+  "dataset_sha256": "18ef9ace71a03d3f1cb4c8200bf6f72a808edeb28f11a740a055300880f62d3b",
+  "model": "gemini-3.1-flash-lite",
+  "metrics": {
+    "routing.false_auto_approvals": 0.0,
+    "routing.route_accuracy": 0.96,
+    "extraction.valid_rate": 1.0,
+    "extraction.line_f1": 1.0
+  }
+}
