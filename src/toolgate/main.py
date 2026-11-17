@@ -42,7 +42,10 @@ def create_app(
     gw = Gateway(policy, app.state.sessionmaker, ds, s)
     mcp = build_mcp(gw)
     mcp_app = mcp.streamable_http_app(
-        streamable_http_path="/", stateless_http=True, json_response=True
+        streamable_http_path="/",
+        stateless_http=True,
+        json_response=True,
+        transport_security=s.mcp_transport_security(),
     )
     app.mount("/mcp", mcp_app)
     app.state.gateway = gw
