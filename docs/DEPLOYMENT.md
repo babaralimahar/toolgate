@@ -3,7 +3,10 @@
 Target: **Render free web service** (Docker, streamable HTTP) + **Neon free Postgres**, like
 P1-P4. Desktop clients can instead run ToolGate locally over stdio. No paid services.
 
-> Status: **not deployed yet.** All five projects get deployed together at the end.
+> Status: **live** at https://toolgate-a2or.onrender.com (Render free, Singapore; Neon free
+> Postgres 17). Set `MCP_PUBLIC_HOSTS` to the public host name: the MCP SDK's DNS-rebinding
+> protection otherwise refuses any Host but localhost. `DOWNSTREAM_TIMEOUT_S=60` covers
+> downstream services waking from sleep.
 
 ## Steps
 

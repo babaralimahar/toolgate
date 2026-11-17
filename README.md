@@ -7,6 +7,12 @@ constraints, rate limits, human approval bound to the exact call, a kill switch,
 tamper-evident audit trail. A second piece, the **eval regression gate**, fails CI when a
 prompt or model change makes any of the projects worse.
 
+**Live:** MCP endpoint `https://toolgate-a2or.onrender.com/mcp/` (streamable HTTP, bearer client
+token; tokens on request), in front of the four live services. Checked live: allowed calls
+reach P2, P3 and P4; out-of-scope calls are denied (`MISSING_SCOPE`, `DENY_RULE`); an
+invoice lookup waits for approval; a bad token is refused; the audit hash chain verifies.
+Free hosting: the first call after idling can take about a minute.
+
 Project 5 of 5 from my 60-day FDE plan. Stack: official MCP Python SDK 2.3 (`MCPServer`,
 streamable HTTP + stdio) · FastAPI · Postgres · OpenTelemetry · Prometheus. The right amount of
 LLM in a gateway is none: everything here is deterministic.
@@ -85,7 +91,7 @@ errors, pending, p95 and LLM cost per tool, chain status), `GET /metrics`.
 ## Design notes
 
 - [ADR 0007: decide() is pure, approvals bind to the call, audit is a hash chain](docs/adr/0007-pure-policy-bound-approvals-hash-chain.md)
-- [Threat model](docs/THREAT_MODEL.md) · [Deployment](docs/DEPLOYMENT.md) (not deployed yet)
+- [Threat model](docs/THREAT_MODEL.md) · [Deployment](docs/DEPLOYMENT.md) (live on Render free + Neon free)
 
 **Limits, stated plainly:** OAuth 2.1 is documented, not built (static bearer tokens per
 client); rate limits and caches are per process; the hash chain proves the log wasn't edited
